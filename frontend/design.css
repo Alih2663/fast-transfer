@@ -1,0 +1,71 @@
+h1 {
+  text-align: center;
+  margin: 20px 0 0 0;
+  font-size: 28px;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.upload-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 56px;
+  background: #ffffff;
+  border: 2px solid #319197;
+  border-radius: 10px;
+  color: #319197;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(49,145,151,0.12);
+  font-size: 16px;
+  user-select: none;
+  text-decoration: none;
+}
+
+.upload-box:hover {
+  background: linear-gradient(90deg, #f0fffd, #e6fbfa);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(49,145,151,0.16);
+}
+
+.upload-box:active { transform: translateY(-1px); }
+.upload-box:focus { outline: 3px solid rgba(49,145,151,0.12); }
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin-top: 50px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+}
+
+#link-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+#download-link {
+  width: 300px;
+  padding: 5px;
+}
