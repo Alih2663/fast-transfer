@@ -1,0 +1,13 @@
+FROM python:3.11-slim   
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/* 
+COPY frontend /frontend
+COPY wait-for-db.sh /app/wait-for-db.sh
+RUN chmod +x /app/wait-for-db.sh
+
+#install netcat for wait-for-db.sh to work
