@@ -7,4 +7,7 @@ Before uploading, it validates the file type and file size to ensure it meets th
 Uploaded files are stored securely in Amazon S3.  
 File metadata such as filename and file type is stored in an Amazon RDS PostgreSQL database.
 
-This setup provides a fast, reliable, and scalable file sharing solution.
+This project includes full Docker support for both the backend API and the PostgreSQL database.
+
+Therefore this setup provides a fast, reliable, and scalable file sharing solution.
+
