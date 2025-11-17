@@ -1,0 +1,12 @@
+services:
+  backend:
+    build: ./backend
+    image: main-backend #backend image 
+    ports:
+      - "8000:8000"
+    command: ["./wait-for-db.sh", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] #backend for waiting RDS postgres
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/frontend 
+    depends_on: []

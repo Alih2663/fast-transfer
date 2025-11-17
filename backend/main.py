@@ -13,15 +13,17 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 import os
 
-load_dotenv() # upload .end
+load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env") #load env
 
-conn = psycopg2.connect(      #posgre connection
+conn = psycopg2.connect(
     host=os.getenv("DB_HOST"),
     dbname=os.getenv("DB_NAME"),
     user=os.getenv("DB_USER"),
     password=os.getenv("DB_PASSWORD"),
-    port=int(os.getenv("DB_PORT", 5432))
+    port=os.getenv("DB_PORT")
 )
+
+
 cursor = conn.cursor(cursor_factory=RealDictCursor)
 
 
@@ -45,7 +47,7 @@ def s3_upload(contents: bytes, key: str): # S3 function
 
 async def s3_download(key: str):
     try:
-        return s3.Object(bucket_name=AWS_BUCKET, key=key).get()['Body'].read()
+        return s3.Object(bucket_name=AWS_BUCKET, key=key).get()['Body'].read() 
     except ClientError as err:
         logger.error(str(err))
 
