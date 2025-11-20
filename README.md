@@ -1,6 +1,8 @@
 This website allows users to upload files and instantly generate a unique shareable URL.  
 You can send this link to anyone so they can download the file directly.
 
+Infrastructure is fully managed using Terraform, which automatically provisions Amazon S3, Amazon RDS, IAM roles, and all required cloud resources.
+
 The application supports JPEG, PNG, and PDF files.  
 Before uploading, it validates the file type and file size to ensure it meets the allowed criteria.
 
