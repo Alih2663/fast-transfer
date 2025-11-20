@@ -26,6 +26,16 @@ conn = psycopg2.connect(
 
 cursor = conn.cursor(cursor_factory=RealDictCursor)
 
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS files (
+        id SERIAL PRIMARY KEY,
+        s3_key TEXT NOT NULL,
+        original_filename TEXT NOT NULL,
+        share_token TEXT NOT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+""")
+conn.commit()
 
 AWS_BUCKET = os.getenv("AWS_BUCKET") # S3 aws bucket
 s3 = boto3.resource(

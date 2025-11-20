@@ -1,5 +1,27 @@
-.env
+#Venv and Python files
 __pycache__/
 *.pyc
 venv/
+.venv/
+
+# Keys and environment files
+.env
 .env.*
+*.pem
+*.key
+
+#Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+
+#IDE and system files
+
+.DS_Store 
+Thumbs.db
+.vscode/
