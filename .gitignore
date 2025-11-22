@@ -25,3 +25,9 @@ terraform.tfstate.backup
 .DS_Store 
 Thumbs.db
 .vscode/
+
+# EC2
+id_rsa
+id_rsa.pub
+*.pem
+*.key
