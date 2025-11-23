@@ -1,71 +1,106 @@
-h1 {
-  text-align: center;
-  margin: 20px 0 0 0;
-  font-size: 28px;
+
+body {
+    font-family: Arial, sans-serif; 
+    margin: 0;
+    height: 100vh; 
+    background: linear-gradient(to bottom, #d4f1f9, #ecfbfd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 700px; 
+    min-height: 400px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+    justify-content: flex-start;
 }
 
+
+h1 {
+    text-align: center;
+    margin: 0 0 30px 0; 
+    font-size: 28px;
+    color: #2c3e50;
+}
+h2 {
+    text-align: center;
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 30px; 
+    line-height: 1.3;
+}
+
+
+#form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; 
+    width: 100%;
+}
+
+
 .upload-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 220px;
-  height: 56px;
-  background: #ffffff;
-  border: 2px solid #319197;
-  border-radius: 10px;
-  color: #319197;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(49,145,151,0.12);
-  font-size: 16px;
-  user-select: none;
-  text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    height: 56px;
+    background: #ffffff;
+    border: 2px solid #319197;
+    border-radius: 10px;
+    color: #319197;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(49,145,151,0.12);
+    font-size: 16px;
+    user-select: none;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 .upload-box:hover {
-  background: linear-gradient(90deg, #f0fffd, #e6fbfa);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(49,145,151,0.16);
+    background: linear-gradient(90deg, #f0fffd, #e6fbfa);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(49,145,151,0.16);
 }
 
 .upload-box:active { transform: translateY(-1px); }
 .upload-box:focus { outline: 3px solid rgba(49,145,151,0.12); }
 
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin-top: 50px;
-}
 
 form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 input, button {
-  padding: 10px;
-  margin: 5px;
+    padding: 10px;
+    margin: 5px;
 }
 
 #link-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 #download-link {
-  width: 300px;
-  padding: 5px;
+    width: 300px;
+    padding: 5px;
 }

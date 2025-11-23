@@ -1,0 +1,62 @@
+---
+- name: Deploy Fast Transfer App to AWS EC2
+  hosts: aws_ec2     
+  become: yes          
+  vars:
+    project_dir: /home/ubuntu/fast-transfer-app
+
+  tasks:
+    - name: Install required packages
+      apt:
+        update_cache: yes
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - gnupg
+        state: present
+
+    - name: Docker GPG key add
+      shell: |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
+        chmod a+r /etc/apt/keyrings/docker.gpg
+
+    - name: Docker repository add
+      shell: |
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+        tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Docker and Docker Compose Plugin
+      apt:
+        update_cache: yes
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Copy project files to EC2 instance
+      ansible.posix.synchronize:
+        src: ./
+        dest: "{{ project_dir }}"
+        recursive: yes
+        delete: no
+        rsync_opts:
+          - "--exclude=terraform"
+          - "--exclude=venv"
+          - "--exclude=__pycache__"
+          - "--exclude=.git"
+          - "--exclude=.gitignore"
+          - "--exclude=deploy.yml"
+          - "--exclude=hosts.ini"
+
+    - name: Docker compose up - build and run containers
+      shell: docker compose up --build -d
+      args:
+        chdir: "{{ project_dir }}" 

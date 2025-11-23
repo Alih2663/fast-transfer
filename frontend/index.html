@@ -1,84 +1,95 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <title>Fast Transfer</title>
-  <link rel="stylesheet" href="/static/design.css">
+    <meta charset="utf-8">
+    <title>Fast Transfer</title>
+    <link rel="stylesheet" href="/static/design.css">
 
-  <script> 
-  async function uploadFile(event) { 
-    event.preventDefault();
-    const fileInput = document.getElementById('actual-btn');
-    const file = fileInput.files[0];
-    const uploadButton = document.querySelector('button[type="submit"]');
-    const form = document.getElementById('upload-form');
-    const linkContainer = document.getElementById("link-container");
+    <script> 
+        async function uploadFile(event) { 
+            event.preventDefault();
+            const fileInput = document.getElementById('actual-btn');
+            const file = fileInput.files[0];
+            const uploadButton = document.querySelector('button[type="submit"]');
+            const form = document.getElementById('upload-form');
+            const linkContainer = document.getElementById("link-container");
 
-    if (!file) {
-      alert("Please select file");
-      return;
-    }
+            const mainTitle = document.querySelector('#form-wrapper h2'); 
 
-    uploadButton.disabled = true;
-    uploadButton.textContent = "Uploading...";
+            if (!file) {
+                alert("Choose a file");
+                return;
+            }
 
-    const formData = new FormData();
-    formData.append("file", file);
+            uploadButton.disabled = true;
+            uploadButton.textContent = "Loading....";
 
-    try {
-      const response = await fetch("/upload", {
-        method: "POST",
-        body: formData
-      });
+            const formData = new FormData();
+            formData.append("file", file);
 
-      if (response.ok) {
-        const data = await response.json();
-        const downloadPageLink = `${window.location.origin}${data.share_url}`;
+            try {
+                const response = await fetch("/upload", { 
+                    method: "POST",
+                    body: formData
+                });
 
-        form.style.display = "none";
+                if (response.ok) {
+                    const data = await response.json();
+                    const downloadPageLink = `${window.location.origin}${data.share_url}`;
 
-        linkContainer.innerHTML = `
-          <h3>Download Link:</h3>
-          <input type="text" id="download-link" value="${downloadPageLink}" readonly />
-          <button onclick="copyLink()">Copy</button>
-        `;
-      } else {
-        alert("Upload failed!");
-        uploadButton.disabled = false;
-        uploadButton.textContent = "Upload";
-      }
-    } catch (err) {
-      alert("Error: " + err.message);
-      uploadButton.disabled = false;
-      uploadButton.textContent = "Upload";
-    }
-  }
+                    form.style.display = "none";
+                    if (mainTitle) mainTitle.style.display = "none";
 
-  function copyLink() {
-    const linkInput = document.getElementById("download-link");
-    linkInput.select();
-    linkInput.setSelectionRange(0, 99999);
-    document.execCommand("copy");
-    alert("Link copied: " + linkInput.value);
-  }
-</script>
+                    linkContainer.innerHTML = `
+                        <h3>Download Link:</h3>
+                        <input type="text" id="download-link" value="${downloadPageLink}" readonly />
+                        <button onclick="copyLink()">Copy</button>
+                    `;
+                } else {
+                    alert("Upload Failed!");
+                    uploadButton.disabled = false;
+                    uploadButton.textContent = "Upload";
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+                uploadButton.disabled = false;
+                uploadButton.textContent = "Upload";
+            }
+        }
 
-
+        function copyLink() {
+            const linkInput = document.getElementById("download-link");
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Link copied: " + linkInput.value);
+        }
+    </script>
 </head>
 <body>
 
-  <h1>FAST TRANSFER</h1>
-<div class="center"> 
-  <form id="upload-form" onsubmit="uploadFile(event)">
-    <input type="file" name="file" id="actual-btn" required />
-    <button type="submit">Upload</button>
-  </form>
+    <div class="center"> 
+        
+        <h1>FAST TRANSFER</h1>
 
-  <div id="link-container"></div>
-</div>
+        <div id="form-wrapper">
+             
+             <h2>Simple and reliable<br>file transfers</h2>
+             
+             <form id="upload-form" onsubmit="uploadFile(event)">
+                <input type="file" name="file" id="actual-btn" required style="display: none;" /> 
+                
+                <label for="actual-btn" class="upload-box">
+                   Choose File
+                </label>
 
+                <button type="submit">Upload</button>
+            </form>
+            
+            <div id="link-container"></div>
+        </div>
 
-  <div id="link-container"></div>
+    </div>
 
 </body>
 </html>
