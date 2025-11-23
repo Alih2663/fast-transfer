@@ -4,7 +4,7 @@
   become: yes          
   vars:
     project_dir: /home/ubuntu/fast-transfer-app
-
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   tasks:
     - name: Install required packages
       apt:
@@ -55,6 +55,19 @@
           - "--exclude=.gitignore"
           - "--exclude=deploy.yml"
           - "--exclude=hosts.ini"
+          - "--exclude=.env"
+    - name: create .env file on EC2 instance
+      copy:
+        dest: "{{ project_dir }}/.env"
+        content: |
+          DB_HOST={{ db_host }}
+          DB_NAME=postgres
+          DB_USER=mandopostgre
+          DB_PASSWORD={{ db_password }}
+          DB_PORT=5432
+          AWS_BUCKET=fast-transfer-bucket-v2
+          AWS_REGION=us-east-1
+          MAX_FILE_SIZE_MB=5
 
     - name: Docker compose up - build and run containers
       shell: docker compose up --build -d
