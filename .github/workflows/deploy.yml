@@ -3,6 +3,12 @@ name: Aws EC2 Deployments
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - '**/*.md'
 
 jobs:
   deploy:
