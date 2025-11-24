@@ -1,7 +1,7 @@
 import boto3
 from loguru import logger
 from botocore.exceptions import ClientError
-from fastapi.responses import Response, HTMLResponse, FileResponse
+from fastapi.responses import Response, HTMLResponse, FileResponse, RedirectResponse
 from uuid import uuid4
 from fastapi import FastAPI, UploadFile, File, HTTPException, status
 from fastapi.staticfiles import StaticFiles
@@ -44,6 +44,13 @@ s3 = boto3.resource(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     region_name=os.getenv("AWS_REGION")
 )
+
+s3_client = boto3.client( #Presignel URL client
+    's3',
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.getenv("AWS_REGION")
+)
 bucket = s3.Bucket(AWS_BUCKET)
 
 
@@ -55,11 +62,6 @@ def s3_upload(contents: bytes, key: str): # S3 function
     logger.info(f'Uploading {key} to s3')
     bucket.put_object(Key=key, Body=contents)
 
-async def s3_download(key: str):
-    try:
-        return s3.Object(bucket_name=AWS_BUCKET, key=key).get()['Body'].read() 
-    except ClientError as err:
-        logger.error(str(err))
 
 
 app = FastAPI()
@@ -112,21 +114,29 @@ async def upload(file: UploadFile = File(...)):
     return {"file_id": file_id, "filename": file.filename, "share_url": share_url}
 
 
-@app.get("/download") #download endpoint
+@app.get("/download")
 async def download(token: str):
     cursor.execute("SELECT s3_key, original_filename FROM files WHERE share_token=%s", (token,))
     file_info = cursor.fetchone()
+    
     if not file_info:
         raise HTTPException(status_code=404, detail="File not found")
 
-    contents = await s3_download(file_info['s3_key'])
-    return Response(
-        content=contents,
-        headers={
-            'Content-Disposition': f'attachment; filename="{file_info["original_filename"]}"',
-            'Content-Type': 'application/octet-stream',
-        }
-    )
+
+    try: #Presigned URL creation
+        presigned_url = s3_client.generate_presigned_url( 
+            'get_object',
+            Params={
+                'Bucket': AWS_BUCKET,
+                'Key': file_info['s3_key'],
+                'ResponseContentDisposition': f'attachment; filename="{file_info["original_filename"]}"' #download as original filename
+            },
+            ExpiresIn=3600  #Link expiration time (1 hour)
+        )
+    except ClientError as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Link olusturulamadi")
+    return RedirectResponse(url=presigned_url)
 
 @app.get("/file/{share_token}", response_class=HTMLResponse) #file download page
 async def file_page(share_token: str):
