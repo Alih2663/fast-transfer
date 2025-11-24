@@ -179,4 +179,4 @@ async def file_page(share_token: str):
     return HTMLResponse(content=html) #return html page
 
 if __name__ == "__main__": #run app
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True) #dev server
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True) #dev server.
