@@ -8,7 +8,8 @@ The application logic runs on a dedicated **AWS EC2 instance** and configuration
 The project supports JPEG, PNG, and PDF files.  
 Before uploading, it validates the file type and file size to ensure it meets the allowed criteria.
 
-Uploaded files are stored securely in **Amazon S3**.  
+Downloads utilize **AWS S3 Presigned URLs** for secure, direct file access.
+
 File metadata such as filename and file type is stored in an **Amazon RDS PostgreSQL database**.
 
 This project includes **full Docker support** for both the backend API and the PostgreSQL database.
