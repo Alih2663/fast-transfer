@@ -13,4 +13,4 @@ Downloads utilize **AWS S3 Presigned URLs** for secure, direct file access.
 File metadata such as filename and file type is stored in an **Amazon RDS PostgreSQL database**.
 
 This project includes **full Docker support** for both the backend API and the PostgreSQL database.
-Therefore this setup provides a fast, reliable, and scalable file sharing solution.
+Therefore this setup provides a fast, reliable, and scalable file sharing solution..
