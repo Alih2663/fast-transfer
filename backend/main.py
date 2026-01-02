@@ -142,40 +142,18 @@ async def download(token: str):
 async def file_page(share_token: str):
     cursor.execute("SELECT s3_key, original_filename FROM files WHERE share_token=%s", (share_token,)) #fetch file metadata
     file_info = cursor.fetchone()
+    
     if not file_info:
         raise HTTPException(status_code=404, detail="File not found")
 
-    html = f""" 
-    <html>
-    <head>
-      <title>Download File</title>
-      <style>
-        body {{
-          font-family: Arial;
-          text-align: center;
-          margin-top: 100px;
-        }}
-        a {{
-          text-decoration: none;
-        }}
-        button {{
-          background-color: #4CAF50;
-          color: white;
-          padding: 10px 20px;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-        }}
-      </style>
-    </head>
-    <body>
-      <h2>File Ready 🔽</h2>
-      <a href="/download?token={share_token}">
-        <button>Download</button>
-      </a>
-    </body>
-    </html>
-    """
+    # Read the frontend template
+    download_page_path = STATIC_DIR / "download.html"
+    with open(download_page_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+
+    # Inject the share token
+    html = html_content.replace("REPLACEMENT_TOKEN", share_token)
+    
     return HTMLResponse(content=html) #return html page
 
 if __name__ == "__main__": #run app
