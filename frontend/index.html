@@ -1,34 +1,107 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
+
 <head>
     <meta charset="utf-8">
-    <title>Fast Transfer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Fast Transfer </title>
     <link rel="stylesheet" href="/static/design.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
 
-    <script> 
-        async function uploadFile(event) { 
-            event.preventDefault();
+<body>
+
+    <div class="main-container">
+
+        <header class="text-content">
+            <h1> FAST TRANSFER</h1>
+            <p class="subtitle"> Fast Transfer is a simple and free way to securely share your files and folders.</p>
+        </header>
+
+        <div id="form-wrapper" class="interactive-area">
+
+            <div class="circle-container">
+                <div class="circle-progress-track"></div>
+                <button type="button" class="start-btn" onclick="document.getElementById('actual-btn').click()">
+                    <span id="btn-text">Start</span>
+                    <svg id="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" style="display:none;">
+                        <path d="M12 16V4M12 4L8 8M12 4L16 8" stroke="#FF6B00" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M20 16.7428C21.2215 17.734 22 19.2646 22 21H2C2 19.2646 2.77849 17.734 4 16.7428"
+                            stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="upload-form" onsubmit="uploadFile(event)">
+                <input type="file" name="file" id="actual-btn" required style="display: none;"
+                    onchange="handleFileSelect(this)" />
+
+                <div class="action-card" onclick="document.getElementById('actual-btn').click()"
+                    style="cursor: pointer;">
+                    <div class="action-text">Click or drag-and-drop your files here</div>
+                    <div class="action-divider"><span>OR</span></div>
+                    <div class="action-icons">
+                        <button type="button" class="icon-btn" title="Add files">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="upload-status" style="display:none;">
+                    <button type="submit" id="submit-btn" class="primary-btn">Transfer</button>
+                </div>
+            </form>
+
+            <div id="link-container"></div>
+        </div>
+
+    </div>
+
+    <script>
+        function handleFileSelect(input) {
+            if (input.files && input.files.length > 0) {
+                const startBtn = document.querySelector('.start-btn');
+                const btnText = document.getElementById('btn-text');
+
+                startBtn.classList.add('selected');
+                btnText.textContent = "Upload";
+
+                uploadFile(new Event('submit'));
+            }
+        }
+
+        async function uploadFile(event) {
+            if (event) event.preventDefault();
             const fileInput = document.getElementById('actual-btn');
             const file = fileInput.files[0];
-            const uploadButton = document.querySelector('button[type="submit"]');
-            const form = document.getElementById('upload-form');
+            const startBtn = document.querySelector('.start-btn');
+            const btnText = document.getElementById('btn-text');
             const linkContainer = document.getElementById("link-container");
-
-            const mainTitle = document.querySelector('#form-wrapper h2'); 
+            const form = document.getElementById('upload-form');
+            const actionCard = document.querySelector('.action-card');
 
             if (!file) {
                 alert("Choose a file");
                 return;
             }
 
-            uploadButton.disabled = true;
-            uploadButton.textContent = "Loading....";
+            startBtn.classList.add('loading');
+            btnText.textContent = "Sending...";
+            actionCard.style.display = 'none';
 
             const formData = new FormData();
             formData.append("file", file);
 
             try {
-                const response = await fetch("/upload", { 
+                const response = await fetch("/upload", {
                     method: "POST",
                     body: formData
                 });
@@ -37,23 +110,30 @@
                     const data = await response.json();
                     const downloadPageLink = `${window.location.origin}${data.share_url}`;
 
-                    form.style.display = "none";
-                    if (mainTitle) mainTitle.style.display = "none";
+                    startBtn.classList.remove('loading');
+                    startBtn.classList.add('success');
+                    btnText.textContent = "Done!";
 
                     linkContainer.innerHTML = `
-                        <h3>Download Link:</h3>
-                        <input type="text" id="download-link" value="${downloadPageLink}" readonly />
-                        <button onclick="copyLink()">Copy</button>
+                        <div class="result-card">
+                            <h3>Ready!</h3>
+                            <div class="input-group">
+                                <input type="text" id="download-link" value="${downloadPageLink}" readonly />
+                                <button onclick="copyLink()">Copy</button>
+                            </div>
+                        </div>
                     `;
                 } else {
                     alert("Upload Failed!");
-                    uploadButton.disabled = false;
-                    uploadButton.textContent = "Upload";
+                    startBtn.classList.remove('loading');
+                    btnText.textContent = "Retry";
+                    actionCard.style.display = 'flex';
                 }
             } catch (err) {
                 alert("Error: " + err.message);
-                uploadButton.disabled = false;
-                uploadButton.textContent = "Upload";
+                startBtn.classList.remove('loading');
+                btnText.textContent = "Retry";
+                actionCard.style.display = 'flex';
             }
         }
 
@@ -62,34 +142,13 @@
             linkInput.select();
             linkInput.setSelectionRange(0, 99999);
             document.execCommand("copy");
-            alert("Link copied: " + linkInput.value);
+
+            const btn = document.querySelector('.input-group button');
+            const originalText = btn.textContent;
+            btn.textContent = "Copied!";
+            setTimeout(() => btn.textContent = originalText, 2000);
         }
     </script>
-</head>
-<body>
-
-    <div class="center"> 
-        
-        <h1>FAST TRANSFER</h1>
-
-        <div id="form-wrapper">
-             
-             <h2>Simple and reliable<br>file transfers</h2>
-             
-             <form id="upload-form" onsubmit="uploadFile(event)">
-                <input type="file" name="file" id="actual-btn" required style="display: none;" /> 
-                
-                <label for="actual-btn" class="upload-box">
-                   Choose File
-                </label>
-
-                <button type="submit">Upload</button>
-            </form>
-            
-            <div id="link-container"></div>
-        </div>
-
-    </div>
-
 </body>
+
 </html>
