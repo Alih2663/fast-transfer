@@ -9,15 +9,29 @@ body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     height: 100vh;
-    background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') no-repeat center center fixed;
-    background: radial-gradient(circle at 50% 50%, #7c83f5 0%, #4a50c4 100%);
-    background-size: cover;
+    background: linear-gradient(300deg, #3d4dc7, #5b64e6, #7c83f5, #a289f0);
+    background-size: 240% 240%;
+    animation: gradient-animation 18s ease infinite;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: white;
     overflow: hidden;
+}
+
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .main-container {
@@ -62,7 +76,8 @@ h1 {
     position: relative;
     width: var(--circle-size);
     height: var(--circle-size);
-    margin-bottom: -40px;
+    margin-bottom: 20px;
+    /* Positive margin to separate completely */
     z-index: 2;
 }
 
@@ -99,6 +114,37 @@ h1 {
     animation: pulse 2s infinite;
 }
 
+.start-btn #btn-text {
+    transition: all 0.3s ease;
+    z-index: 2;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.start-btn #upload-icon {
+    position: absolute;
+    bottom: -40px;
+    /* Start below */
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: block !important;
+    /* Force display for animation */
+}
+
+.start-btn:hover #btn-text {
+    transform: translateY(-20px);
+    opacity: 0;
+    /* Text fades out and moves up */
+}
+
+.start-btn:hover #upload-icon {
+    bottom: 50%;
+    /* Center vertically */
+    transform: translateY(50%);
+    /* Adjust for height to exact center */
+    opacity: 1;
+}
+
 @keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.4);
@@ -123,15 +169,20 @@ h1 {
     transform: scale(0.95);
 }
 
-.start-btn span {
-    z-index: 2;
-}
-
 .start-btn.loading {
     background: #FF6B00;
     color: white;
     border-color: rgba(255, 255, 255, 0.3);
     font-size: 1.5rem;
+}
+
+.start-btn.loading #btn-text {
+    transform: translateY(0);
+    /* Reset position on loading */
+}
+
+.start-btn.loading #upload-icon {
+    display: none !important;
 }
 
 .start-btn.loading::after {
@@ -154,13 +205,15 @@ h1 {
 .action-card {
     background: white;
     color: #333;
-    padding: 60px 40px 30px;
+    padding: 40px 40px 30px;
+    /* Standard padding */
     border-radius: 16px;
     width: 320px;
     text-align: center;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     position: relative;
-    top: -20px;
+    top: 0;
+    /* No negative offset needed */
     z-index: 1;
     animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
@@ -222,48 +275,89 @@ h1 {
     background: rgba(255, 107, 0, 0.05);
 }
 
+/* Result Card - Beautified */
 .result-card {
     background: white;
     color: #333;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 30px;
+    border-radius: 16px;
     margin-top: 20px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-out;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
+    text-align: center;
 }
 
 .result-card h3 {
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
     color: #4CAF50;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.result-card h3::before {
+    content: '✓';
+    background: #4CAF50;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-group {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
 }
 
 .input-group input {
     flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    color: #555;
+    outline: none;
+    font-family: inherit;
 }
 
 .input-group button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     background: #333;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
+    transition: all 0.2s;
 }
 
 .input-group button:hover {
     background: #000;
+    transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes fadeInDown {
